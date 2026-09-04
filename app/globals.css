@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/**
+ * 디자인 토큰.
+ * 색을 바꾸고 싶으면 여기만 수정하면 전체 화면에 반영된다.
+ */
+@theme inline {
+  --color-canvas: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-line: #e3e3df;
+  --color-line-strong: #1a1a1a;
+  --color-ink: #1a1a1a;
+  --color-muted: #6b6b6b;
+  --color-subtle: #9a9a94;
+
+  --radius-card: 14px;
+}
+
+html,
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 페이지 진입 시 짧은 페이드. 화려한 전환은 쓰지 않는다. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.24s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.2s ease-out;
+}
