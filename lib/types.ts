@@ -6,6 +6,12 @@
 
 /** 하나의 선택 가능한 프롬프트 조각 (예: Exposed Concrete) */
 export interface PromptOption {
+  category?: string;
+  tags?: string[];
+  compatibleTypes?: string[];
+  recommended?: boolean;
+  conflictsWith?: string[];
+  previewImage?: string;
   id: string;
   /** 화면에 보여줄 이름 */
   title: string;
@@ -34,6 +40,7 @@ export interface OptionCategory {
 
 /** 만들고 싶은 이미지의 종류 (예: 투시도) */
 export interface ImageType {
+  subject?: string;
   id: string;
   name: string;
   englishName: string;

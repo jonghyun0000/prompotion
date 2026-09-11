@@ -43,7 +43,9 @@ export default function BeforeAfterViewer({
             <figcaption
               className={[
                 "absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.1em]",
-                pane.emphasis ? "bg-ink text-white" : "bg-surface/90 text-muted",
+                pane.emphasis
+                  ? "bg-ink text-white"
+                  : "bg-surface/90 text-muted",
               ].join(" ")}
             >
               {pane.label}

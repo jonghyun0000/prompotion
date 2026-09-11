@@ -11,7 +11,11 @@ interface ImageTypeCardProps {
 }
 
 /** Page 2 의 이미지 종류 카드. */
-export default function ImageTypeCard({ imageType, optionCount, onSelect }: ImageTypeCardProps) {
+export default function ImageTypeCard({
+  imageType,
+  optionCount,
+  onSelect,
+}: ImageTypeCardProps) {
   return (
     <button
       type="button"
@@ -30,10 +34,14 @@ export default function ImageTypeCard({ imageType, optionCount, onSelect }: Imag
       <div className="flex flex-1 flex-col gap-2 p-5">
         <div className="flex items-baseline justify-between gap-2">
           <h3 className="text-lg font-semibold text-ink">{imageType.name}</h3>
-          <span className="text-xs tracking-wide text-subtle">{imageType.englishName}</span>
+          <span className="text-xs tracking-wide text-subtle">
+            {imageType.englishName}
+          </span>
         </div>
 
-        <p className="flex-1 text-sm leading-relaxed text-muted">{imageType.description}</p>
+        <p className="flex-1 text-sm leading-relaxed text-muted">
+          {imageType.description}
+        </p>
 
         <div className="mt-2 flex items-center justify-between border-t border-line pt-3">
           <span className="text-xs text-muted">{optionCount}개의 옵션</span>

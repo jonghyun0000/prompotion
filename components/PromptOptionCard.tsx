@@ -12,7 +12,11 @@ interface PromptOptionCardProps {
 }
 
 /** Page 4 의 핵심 카드. Before/After 비교와 실제 프롬프트 문구를 함께 보여준다. */
-export default function PromptOptionCard({ option, selected, onSelect }: PromptOptionCardProps) {
+export default function PromptOptionCard({
+  option,
+  selected,
+  onSelect,
+}: PromptOptionCardProps) {
   return (
     <article
       className={[
@@ -23,7 +27,9 @@ export default function PromptOptionCard({ option, selected, onSelect }: PromptO
       <header className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-ink">{option.title}</h3>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{option.description}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">
+            {option.description}
+          </p>
         </div>
 
         {selected ? (
@@ -41,7 +47,9 @@ export default function PromptOptionCard({ option, selected, onSelect }: PromptO
       />
 
       <div className="mt-4 rounded-[10px] border border-line bg-canvas p-4">
-        <p className="mb-1.5 text-[11px] font-semibold tracking-[0.1em] text-subtle">PROMPT</p>
+        <p className="mb-1.5 text-[11px] font-semibold tracking-[0.1em] text-subtle">
+          PROMPT
+        </p>
         <p className="font-mono text-[13px] leading-relaxed break-words text-ink">
           {option.promptText}
         </p>

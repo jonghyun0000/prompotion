@@ -1,108 +1,194 @@
 "use client";
-
-import { useEffect } from "react";
-import { X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 import CopyButton from "./CopyButton";
+import { useSelection } from "@/context/SelectionContext";
+import { useToast } from "@/context/ToastContext";
+import { savePrompt, readResultImage } from "@/lib/storage";
+import { trackEvent } from "@/lib/analytics";
 import type { OptionCategory, PromptOption } from "@/lib/types";
 
-interface FinalPromptModalProps {
+interface Props {
   open: boolean;
   imageTypeName: string;
   finalPrompt: string;
   breakdown: { category: OptionCategory; option: PromptOption }[];
   onClose: () => void;
 }
-
-/** 완성된 프롬프트를 보여주는 모달. */
 export default function FinalPromptModal({
   open,
   imageTypeName,
   finalPrompt,
   breakdown,
   onClose,
-}: FinalPromptModalProps) {
-  // 열려 있는 동안 배경 스크롤을 막고, ESC 로 닫을 수 있게 한다.
+}: Props) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const { selection } = useSelection();
+  const { showToast } = useToast();
+  const [title, setTitle] = useState("");
+  const [image, setImage] = useState<string>();
+  const [busy, setBusy] = useState(false);
+  const [savedId, setSavedId] = useState<string>();
+  const [status, setStatus] = useState("");
   useEffect(() => {
-    if (!open) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-
-    const previousOverflow = document.body.style.overflow;
+    if (!open) {
+      ref.current?.close();
+      return;
+    }
+    ref.current?.showModal();
+    const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previous;
     };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
+  }, [open]);
+  const save = () => {
+    try {
+      const id = savedId || crypto.randomUUID();
+      savePrompt({
+        id,
+        title:
+          title.trim().slice(0, 100) ||
+          imageTypeName + " · " + (breakdown[0]?.option.title || "내 프롬프트"),
+        prompt: finalPrompt,
+        selection,
+        createdAt: new Date().toISOString(),
+        image,
+      });
+      setSavedId(id);
+      setStatus("내 프롬프트에 저장했습니다.");
+      trackEvent("prompt_saved", {
+        imageType: selection.selectedImageType || "",
+        elementCount: breakdown.length,
+      });
+      showToast("이 브라우저의 내 프롬프트에 저장했습니다.");
+    } catch {
+      setStatus(
+        "저장 공간이 부족하거나 저장이 차단되어 있습니다. 프롬프트를 복사해 보관해주세요.",
+      );
+    }
+  };
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      ref={ref}
       aria-label="완성된 프롬프트"
-      className="fixed inset-0 z-40 flex items-end justify-center bg-ink/30 p-0 sm:items-center sm:p-6"
-      onClick={onClose}
+      className="m-auto max-h-[92dvh] w-[calc(100%-2rem)] max-w-2xl rounded-card border border-line bg-surface p-0 text-ink backdrop:bg-black/40"
+      onCancel={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-      <div
-        onClick={(event) => event.stopPropagation()}
-        className="animate-fade-in flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-card border border-line bg-surface sm:rounded-card"
-      >
-        <header className="flex items-start justify-between gap-4 border-b border-line p-6">
+      <div className="flex max-h-[90dvh] flex-col overflow-hidden">
+        <header className="flex items-start justify-between gap-4 border-b border-line p-5 sm:p-6">
           <div>
-            <h2 className="text-xl font-semibold text-ink">프롬프트가 완성되었습니다.</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="eyebrow">READY TO CREATE</p>
+            <h2 className="mt-2 text-xl font-semibold">
+              프롬프트가 완성되었습니다.
+            </h2>
+            <p className="mt-2 text-sm text-muted">
               {imageTypeName} · {breakdown.length}개 요소 조합
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="닫기"
-            className="-mr-1 -mt-1 rounded-full p-2 text-muted transition-colors hover:bg-canvas hover:text-ink"
-          >
-            <X size={18} strokeWidth={1.5} />
+          <button onClick={onClose} aria-label="닫기" className="p-3">
+            ✕
           </button>
         </header>
-
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="rounded-[10px] border border-line bg-canvas p-5">
-            <p className="mb-2 text-[11px] font-semibold tracking-[0.1em] text-subtle">
-              FINAL PROMPT
-            </p>
-            <p className="font-mono text-sm leading-relaxed break-words whitespace-pre-wrap text-ink">
-              {finalPrompt}
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <p className="mb-3 text-[11px] font-semibold tracking-[0.1em] text-subtle">
-              선택한 요소
-            </p>
-            <ul className="divide-y divide-line border-y border-line">
-              {breakdown.map(({ category, option }) => (
-                <li key={category.id} className="flex items-baseline justify-between gap-4 py-3">
-                  <span className="shrink-0 text-sm text-muted">{category.name}</span>
-                  <span className="text-right text-sm font-medium text-ink">{option.title}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="overflow-y-auto p-5 sm:p-6">
+          <label className="eyebrow" htmlFor="final-prompt">
+            FINAL PROMPT
+          </label>
+          <textarea
+            id="final-prompt"
+            readOnly
+            value={finalPrompt}
+            className="mt-2 min-h-40 w-full resize-y rounded-lg border border-line bg-canvas p-4 font-mono text-sm leading-relaxed"
+          />
+          <ul className="my-5 divide-y divide-line border-y border-line">
+            {breakdown.map(({ category, option }) => (
+              <li
+                key={category.id}
+                className="flex justify-between gap-4 py-3 text-sm"
+              >
+                <span className="text-muted">{category.name}</span>
+                <span className="text-right">{option.title}</span>
+              </li>
+            ))}
+          </ul>
+          <details>
+            <summary className="cursor-pointer py-3 text-sm font-medium">
+              프롬프트 저장 / 결과 이미지 첨부
+            </summary>
+            <div className="space-y-4 pt-3">
+              <label className="block text-sm">
+                저장 이름
+                <input
+                  value={title}
+                  maxLength={100}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="예: 따뜻한 저녁의 콘크리트 주택"
+                  className="mt-2 w-full rounded-lg border border-line p-3"
+                />
+              </label>
+              <label className="block text-sm">
+                생성 결과 이미지 첨부 (선택)
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  disabled={busy}
+                  className="mt-2 block max-w-full text-xs"
+                  onChange={async (e) => {
+                    const input = e.currentTarget;
+                    const file = input.files?.[0];
+                    if (!file) return;
+                    setBusy(true);
+                    try {
+                      setImage(await readResultImage(file));
+                      trackEvent("result_uploaded", {
+                        imageType: selection.selectedImageType || "",
+                        fileBytes: file.size,
+                      });
+                    } catch {
+                      setStatus(
+                        "이미지를 열지 못했습니다. 10MB 이하 JPG·PNG·WebP 파일로 다시 시도해주세요.",
+                      );
+                    } finally {
+                      setBusy(false);
+                      input.value = "";
+                    }
+                  }}
+                />
+              </label>
+              {image && (
+                <p className="text-xs text-muted">
+                  이미지 첨부 완료 · 저장하면 함께 보관됩니다.
+                </p>
+              )}
+              <p className="text-xs leading-5 text-muted">
+                10MB 이하 JPG·PNG·WebP. 이 브라우저에만 저장됩니다. 브라우저
+                데이터 삭제 시 사라집니다.
+              </p>
+              <Button variant="secondary" disabled={busy} onClick={save}>
+                {busy
+                  ? "이미지 처리 중…"
+                  : savedId
+                    ? "저장 내용 업데이트"
+                    : "프롬프트 저장"}
+              </Button>
+              {status && (
+                <p role="status" className="text-sm leading-6">
+                  {status}
+                </p>
+              )}
+            </div>
+          </details>
         </div>
-
-        <footer className="flex flex-col-reverse gap-3 border-t border-line p-6 sm:flex-row sm:justify-end">
-          <Button variant="secondary" size="lg" onClick={onClose} className="w-full sm:w-auto">
+        <footer className="flex flex-col-reverse gap-3 border-t border-line p-5 sm:flex-row sm:justify-end">
+          <Button variant="secondary" size="lg" onClick={onClose}>
             다시 수정하기
           </Button>
-          <CopyButton text={finalPrompt} />
+          <CopyButton key={finalPrompt} text={finalPrompt} />
         </footer>
       </div>
-    </div>
+    </dialog>
   );
 }

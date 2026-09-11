@@ -13,7 +13,10 @@ const steps: { id: Step; index: string; label: string }[] = [
 /** Page 2 이후 상단에 표시되는 진행 단계 표시. */
 export default function ProgressNavigation({ current }: { current: Step }) {
   return (
-    <nav aria-label="진행 단계" className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm">
+    <nav
+      aria-label="진행 단계"
+      className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
+    >
       {steps.map((step, i) => {
         const active = step.id === current;
         return (
@@ -29,7 +32,11 @@ export default function ProgressNavigation({ current }: { current: Step }) {
               {step.label}
             </span>
             {i < steps.length - 1 ? (
-              <ChevronRight size={14} strokeWidth={1.5} className="text-subtle" />
+              <ChevronRight
+                size={14}
+                strokeWidth={1.5}
+                className="text-subtle"
+              />
             ) : null}
           </div>
         );

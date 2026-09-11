@@ -1,0 +1,124 @@
+{
+  "createdAt": "2026-09-11",
+  "method": "OpenAI built-in imagegen; independently authored SVG for diagrams",
+  "baseline": "Original generated design; not a photograph of an identified existing building",
+  "limitations": "Illustrative visual examples, not measured optical simulations. Same baseline reused for neutral daylight, concrete, eye-level/35mm, calm, minimalist and photorealistic options. Other types are conceptual examples, not construction documents.",
+  "assets": [
+    {
+      "id": "baseline",
+      "prompt": "Neutral daylight architectural baseline; original AI-generated L-shaped concrete house. Built-in imagegen."
+    },
+    {
+      "id": "lighting-golden-hour",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Change only lighting to warm golden sunset, golden sunlight raking from left, long soft shadows. Preserve exact building geometry, materials, tree, paving and 35mm camera. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "lighting-overcast",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Change only lighting and sky to overcast neutral diffuse daylight, uniform soft sky, no strong shadows. Preserve exact building geometry, materials, tree, paving and camera. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "lighting-night",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Change only lighting to deep blue night, realistic warm interior windows glowing, discreet exterior lights. Preserve exact building geometry, materials, tree, paving and camera. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "material-red-brick",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Replace only exposed concrete surfaces with richly detailed warm red brick masonry. Preserve exact geometry, window openings, daylight, camera, paving and tree. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "material-wood",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Replace only exposed concrete surfaces with warm natural vertical timber cladding. Preserve exact geometry, window openings, daylight, camera, paving and tree. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "material-glass",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Replace only concrete facade walls with transparent reflective glass curtain wall and thin dark mullions, revealing interiors. Preserve exact building massing, daylight, camera, paving and tree. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "material-stone",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Replace only exposed concrete surfaces with pale limestone cladding with visible natural texture and joints. Preserve exact geometry, window openings, daylight, camera, paving and tree. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "material-metal",
+      "prompt": "Architectural visual comparison asset, photorealistic landscape 4:3. Edit the supplied baseline house. Replace only exposed concrete surfaces with brushed zinc standing seam metal cladding. Preserve exact geometry, window openings, daylight, camera, paving and tree. No text, no logos, no watermarks. Only one image."
+    },
+    {
+      "id": "camera-wide-angle",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Change only the camera to a wider 24mm lens from slightly further back, emphasize the expanded surrounding view and spatial perspective. Keep same house, materials and daylight. No text, logos or watermarks."
+    },
+    {
+      "id": "camera-low-angle",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Change only camera to a very low angle close to ground looking upward, monumental perspective of the same house. Keep daylight and materials. No text, logos or watermarks."
+    },
+    {
+      "id": "camera-aerial",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: View exactly the same L-shaped courtyard house from high oblique aerial angle, show its flat roof, courtyard and immediate landscape. Same concrete architecture and neutral daylight. No text, logos or watermarks."
+    },
+    {
+      "id": "camera-50mm",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: View the same house with a 50mm lens from farther away, more compressed perspective, front facade fills frame, same daylight and materials. No text, logos or watermarks."
+    },
+    {
+      "id": "environment-urban",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Change only surrounding environment to an urban residential street, neighboring buildings in background and paved sidewalk, preserve house, concrete material, camera and daylight. No text, logos or watermarks."
+    },
+    {
+      "id": "environment-nature",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Change only surrounding environment to lush forest, tall trees and ferns around the house, preserve house, concrete material, camera and daylight. No text, logos or watermarks."
+    },
+    {
+      "id": "environment-minimal",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Change only surroundings to empty clean pale ground and seamless gray background, remove trees and landscape, preserve house, concrete material, camera and daylight. No text, logos or watermarks."
+    },
+    {
+      "id": "atmosphere-foggy",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Add gentle atmospheric fog obscuring distant scenery and softening depth, keep same house, geometry, concrete, daylight and camera. No text, logos or watermarks."
+    },
+    {
+      "id": "atmosphere-cinematic",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Change grading and mood to cinematic architectural editorial, deeper shadows, dramatic subtle tonal contrast, restrained warm-cool film palette. Keep same daytime setting, building geometry, concrete, camera and environment. No text, logos or watermarks."
+    },
+    {
+      "id": "type-section",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Create a precise architectural section perspective cutaway of this same two storey house: remove front wall in clean vertical sectional plane showing floors, staircase, furniture, rooms and slabs with clearly visible cut edges. Architectural visualization, ivory background, no text. No text, logos or watermarks."
+    },
+    {
+      "id": "style-brutalism",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Transform the design language to brutalist architecture, massive raw concrete forms, deep recesses and strong cantilevers. Keep same general two storey L-shaped layout, neutral daylight, camera and landscape. No text, logos or watermarks."
+    },
+    {
+      "id": "style-modern",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Transform design language to refined modern architecture with slim white planes, generous continuous glazing and horizontal lines. Keep same two storey L-shaped layout, neutral daylight, camera and landscape. No text, logos or watermarks."
+    },
+    {
+      "id": "rendering-competition",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Render same house as architectural competition presentation: painterly landscape, carefully layered entourage silhouettes, soft desaturated warm palette, atmospheric architectural collage. Same camera and geometric building. No text, logos or watermarks."
+    },
+    {
+      "id": "rendering-conceptual",
+      "prompt": "Architecture visual prompt tool preview, single landscape 4:3 image. Edit reference: Render same house as conceptual architectural model, simplified pale volumes, sculptural shadows, subtle paper texture, abstract context. Same camera and geometric building. No text, logos or watermarks."
+    },
+    {
+      "id": "lighting-dramatic",
+      "prompt": "Single architectural visual comparison, landscape 4:3. Edit reference. Change only illumination to dramatic directional daylight with deep shadows and sharp shafts of light. Preserve building, material, camera and surroundings. No labels, text, logos or watermarks."
+    },
+    {
+      "id": "lighting-soft-light",
+      "prompt": "Single architectural visual comparison, landscape 4:3. Edit reference. Change only lighting to gentle soft bright studio-like daylight under thin translucent clouds. Subtle shadows, lifted midtones. Preserve building, material, camera and surroundings. No labels, text, logos or watermarks."
+    },
+    {
+      "id": "environment-waterfront",
+      "prompt": "Single architectural visual comparison, landscape 4:3. Edit reference. Place the same house beside a calm lake with the water visible behind and to the right, preserve exact house, material, camera and daylight. No labels, text, logos or watermarks."
+    },
+    {
+      "id": "environment-residential",
+      "prompt": "Single architectural visual comparison, landscape 4:3. Edit reference. Place the same house within a quiet residential neighborhood with small houses, low garden fences and a sidewalk, preserve exact house, material, camera and daylight. No labels, text, logos or watermarks."
+    },
+    {
+      "id": "environment-commercial",
+      "prompt": "Single architectural visual comparison, landscape 4:3. Edit reference. Place the same house within a commercial district with office buildings and a broad plaza behind, preserve exact house, material, camera and daylight. No labels, text, logos or watermarks."
+    },
+    {
+      "id": "rendering-editorial",
+      "prompt": "Single architectural visual comparison, landscape 4:3. Edit reference. Render same house in restrained editorial architecture magazine style, slightly desaturated natural colors, subtle grain, fine photographic details, perfectly balanced framing. Keep same house, camera and daylight. No labels, text, logos or watermarks."
+    }
+  ]
+}

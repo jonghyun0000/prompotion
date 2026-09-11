@@ -13,7 +13,7 @@ export default function Toast({ message }: { message: string | null }) {
     <div
       role="status"
       aria-live="polite"
-      className="animate-toast-in fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-ink bg-ink px-5 py-3 text-sm text-white shadow-sm"
+      className="animate-toast-in fixed bottom-24 left-1/2 z-[100] flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-2 rounded-xl border border-ink bg-ink px-5 py-3 text-sm text-white shadow-sm"
     >
       <Check size={16} strokeWidth={2} />
       {message}

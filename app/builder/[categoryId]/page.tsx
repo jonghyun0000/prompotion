@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
@@ -19,8 +19,24 @@ export default function PromptOptionPage() {
   const { selection, hydrated, selectOption } = useSelection();
 
   const imageType = getImageType(selection.selectedImageType);
-  const category = getCategory(categoryId);
-  const selectedOption = category ? getSelectedOption(category, selection) : undefined;
+  const candidate = getCategory(categoryId);
+  const category = useMemo(
+    () =>
+      imageType?.optionCategoryIds.includes(categoryId) && candidate
+        ? {
+            ...candidate,
+            promptOptions: candidate.promptOptions.filter(
+              (option) =>
+                !option.compatibleTypes ||
+                option.compatibleTypes.includes(imageType.id),
+            ),
+          }
+        : undefined,
+    [imageType, categoryId, candidate],
+  );
+  const selectedOption = category
+    ? getSelectedOption(category, selection)
+    : undefined;
 
   // 잘못된 경로거나 이미지 종류가 없으면 앞 단계로 되돌린다.
   useEffect(() => {
@@ -31,7 +47,9 @@ export default function PromptOptionPage() {
 
   if (!hydrated || !imageType || !category) {
     return (
-      <div className="mx-auto max-w-3xl px-5 py-24 text-sm text-muted sm:px-8">불러오는 중...</div>
+      <div className="mx-auto max-w-3xl px-5 py-24 text-sm text-muted sm:px-8">
+        불러오는 중...
+      </div>
     );
   }
 
@@ -55,7 +73,9 @@ export default function PromptOptionPage() {
           <ProgressNavigation current="prompt" />
         </div>
 
-        <Breadcrumb items={[imageType.name, category.name, selectedOption?.title]} />
+        <Breadcrumb
+          items={[imageType.name, category.name, selectedOption?.title]}
+        />
 
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">

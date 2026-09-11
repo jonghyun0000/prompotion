@@ -1,7 +1,20 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import type { SelectionState } from "@/lib/types";
+import {
+  sanitizeSelection,
+  getCategoriesForImageType,
+  getImageType,
+} from "@/lib/prompt";
+import { trackEvent } from "@/lib/analytics";
 
 const STORAGE_KEY = "prompotion:selection";
 
@@ -18,6 +31,7 @@ interface SelectionContextValue {
   selectOption: (categoryId: string, optionId: string) => void;
   clearOption: (categoryId: string) => void;
   reset: () => void;
+  restore: (value: SelectionState) => void;
 }
 
 const SelectionContext = createContext<SelectionContextValue | null>(null);
@@ -39,10 +53,7 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored) as SelectionState;
         if (parsed && typeof parsed === "object") {
-          restored = {
-            selectedImageType: parsed.selectedImageType ?? null,
-            selectedOptions: parsed.selectedOptions ?? {},
-          };
+          restored = sanitizeSelection(parsed);
         }
       }
     } catch {
@@ -66,6 +77,8 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
   }, [selection, hydrated]);
 
   const selectImageType = useCallback((imageTypeId: string) => {
+    if (!getImageType(imageTypeId)) return;
+    trackEvent("image_type_selected", { imageType: imageTypeId });
     setSelection((prev) =>
       // 다른 종류를 고르면 기존 옵션 선택은 의미가 없으므로 초기화한다.
       prev.selectedImageType === imageTypeId
@@ -74,14 +87,27 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  const selectOption = useCallback((categoryId: string, optionId: string) => {
-    setSelection((prev) => ({
-      ...prev,
-      selectedOptions: { ...prev.selectedOptions, [categoryId]: optionId },
-    }));
-  }, []);
+  const selectOption = useCallback(
+    (categoryId: string, optionId: string) => {
+      const valid = getCategoriesForImageType(selection.selectedImageType)
+        .find((category) => category.id === categoryId)
+        ?.promptOptions.some((option) => option.id === optionId);
+      if (!valid) return;
+      trackEvent("element_selected", {
+        imageType: selection.selectedImageType || "",
+        category: categoryId,
+        element: optionId,
+      });
+      setSelection((prev) => ({
+        ...prev,
+        selectedOptions: { ...prev.selectedOptions, [categoryId]: optionId },
+      }));
+    },
+    [selection.selectedImageType],
+  );
 
   const clearOption = useCallback((categoryId: string) => {
+    trackEvent("element_removed", { category: categoryId });
     setSelection((prev) => {
       const next = { ...prev.selectedOptions };
       delete next[categoryId];
@@ -89,20 +115,49 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const reset = useCallback(() => setSelection(emptySelection), []);
-
-  const value = useMemo(
-    () => ({ selection, hydrated, selectImageType, selectOption, clearOption, reset }),
-    [selection, hydrated, selectImageType, selectOption, clearOption, reset],
+  const reset = useCallback(() => {
+    setSelection(emptySelection);
+    trackEvent("reset");
+  }, []);
+  const restore = useCallback(
+    (value: SelectionState) => setSelection(sanitizeSelection(value)),
+    [],
   );
 
-  return <SelectionContext.Provider value={value}>{children}</SelectionContext.Provider>;
+  const value = useMemo(
+    () => ({
+      selection,
+      hydrated,
+      selectImageType,
+      selectOption,
+      clearOption,
+      reset,
+      restore,
+    }),
+    [
+      selection,
+      hydrated,
+      selectImageType,
+      selectOption,
+      clearOption,
+      reset,
+      restore,
+    ],
+  );
+
+  return (
+    <SelectionContext.Provider value={value}>
+      {children}
+    </SelectionContext.Provider>
+  );
 }
 
 export function useSelection() {
   const context = useContext(SelectionContext);
   if (!context) {
-    throw new Error("useSelection 은 SelectionProvider 안에서만 사용할 수 있습니다.");
+    throw new Error(
+      "useSelection 은 SelectionProvider 안에서만 사용할 수 있습니다.",
+    );
   }
   return context;
 }

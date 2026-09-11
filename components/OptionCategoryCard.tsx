@@ -33,13 +33,19 @@ export default function OptionCategoryCard({
         ].join(" ")}
         aria-hidden
       >
-        {selected ? <Check size={15} strokeWidth={2.5} /> : <span className="text-xs">{category.order}</span>}
+        {selected ? (
+          <Check size={15} strokeWidth={2.5} />
+        ) : (
+          <span className="text-xs">{category.order}</span>
+        )}
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline gap-x-2">
           <h3 className="font-semibold text-ink">{category.name}</h3>
-          <span className="text-xs tracking-wide text-subtle">{category.englishName}</span>
+          <span className="text-xs tracking-wide text-subtle">
+            {category.englishName}
+          </span>
         </div>
 
         <p className="mt-1 truncate text-sm">
@@ -55,7 +61,11 @@ export default function OptionCategoryCard({
         {selected ? "변경하기" : "선택하기"}
         <ChevronRight size={16} strokeWidth={1.5} />
       </span>
-      <ChevronRight size={18} strokeWidth={1.5} className="shrink-0 text-subtle sm:hidden" />
+      <ChevronRight
+        size={18}
+        strokeWidth={1.5}
+        className="shrink-0 text-subtle sm:hidden"
+      />
     </button>
   );
 }

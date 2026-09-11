@@ -38,7 +38,8 @@ export default function ImageTypePage() {
             어떤 이미지를 만들고 싶나요?
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">
-            이미지 종류를 선택하면 해당 이미지에 필요한 프롬프트 옵션을 구성할 수 있습니다.
+            이미지 종류를 선택하면 해당 이미지에 필요한 프롬프트 옵션을 구성할
+            수 있습니다.
           </p>
         </div>
       </div>

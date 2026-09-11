@@ -41,7 +41,9 @@ export default function ImageWithFallback({
         aria-label={alt}
       >
         <ImageOff size={20} strokeWidth={1.5} />
-        {label ? <span className="px-3 text-center text-xs">{label}</span> : null}
+        {label ? (
+          <span className="px-3 text-center text-xs">{label}</span>
+        ) : null}
       </div>
     );
   }
@@ -52,6 +54,9 @@ export default function ImageWithFallback({
       src={src}
       alt={alt}
       loading="lazy"
+      decoding="async"
+      width={800}
+      height={600}
       onError={() => setFailed(true)}
       className={`object-cover ${className}`}
     />
