@@ -27,6 +27,9 @@ body {
     -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic",
     "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* 페이지 진입 시 짧은 페이드. 화려한 전환은 쓰지 않는다. */
@@ -91,6 +94,11 @@ summary {
 }
 .skip-link:focus {
   top: 1rem;
+}
+@media (display-mode: standalone) {
+  [data-install-promotion] {
+    display: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   *,

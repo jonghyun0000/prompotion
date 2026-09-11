@@ -6,9 +6,12 @@ import { useToast } from "@/context/ToastContext";
 import { useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { rememberCopy } from "@/lib/storage";
+import Link from "next/link";
+import { useInstall } from "@/context/InstallContext";
 
 /** 클립보드 복사 버튼. Clipboard API 를 쓸 수 없는 환경에서는 대체 방식으로 복사한다. */
 export default function CopyButton({ text }: { text: string }) {
+  const { installed } = useInstall();
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
@@ -58,6 +61,15 @@ export default function CopyButton({ text }: { text: string }) {
         <Copy size={16} strokeWidth={1.75} />
         {copied ? "복사 완료!" : "프롬프트 복사"}
       </Button>
+      {copied && !installed && (
+        <Link
+          href="/install"
+          data-install-promotion
+          className="py-2 text-center text-xs text-muted underline underline-offset-4"
+        >
+          다음에도 쓰려면 홈 화면에 추가하기
+        </Link>
+      )}
       {error && (
         <p role="alert" className="max-w-xs text-xs leading-5 text-red-700">
           {error}

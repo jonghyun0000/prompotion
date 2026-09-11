@@ -296,7 +296,7 @@ export default function PromptBuilderPage() {
           </p>
         </aside>
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-between gap-3 border-t border-line bg-surface p-4 lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-between gap-3 border-t border-line bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] lg:hidden">
         <button
           onClick={() => {
             cartRef.current?.scrollIntoView({ behavior: "smooth" });

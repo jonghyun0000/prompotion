@@ -51,3 +51,17 @@ The existing GitHub repository jonghyun0000/prompotion, main branch, is connecte
 
 ## Browser verification
 See scripts/e2e-test.js for the maintained flow checklist. Unit tests cover invalid storage, compatibility, prompt ordering, semantic deduplication, data/asset integrity, saved state, history, upload validation and storage failures.
+
+## Home screen installation
+
+The header, landing page, and successful prompt-copy state link to /install. It detects iPhone/iPad or Android, lets users switch instructions, explains embedded-browser limitations, and offers a direct Android install button only when Chrome supplies beforeinstallprompt. Cancellation, rejection, and unsupported browsers keep manual instructions available. No success is inferred just from clicking a button. Installed display mode hides invitations.
+
+app/manifest.ts sets a stable id, / scope, /select launch URL, standalone display, colors, 192/512px icons and a separate maskable icon entry. Apple touch icon (180px) and app metadata support iOS. public/icons/prompotion.svg is the original editable, two-module P symbol; npm run icons reproduces all PNGs and the 16/32/48px favicon using Sharp bundled with Next.js. The full-bleed square background is intentional: the OS applies its own icon mask.
+
+This is a home-screen web app, not an App Store/Play Store release. Internet is required. No service worker, offline cache, push permission, or new API key is introduced. Browser and installed-web-app storage can differ; do not promise migration or sync of saved prompts.
+
+Installation events remain local through the existing analytics utility: install_guide_viewed, install_prompt_requested, install_prompt_outcome, app_installed, homescreen_opened. iOS does not expose the same appinstalled event; standalone launch is tracked separately. No device fingerprint or raw user agent is stored.
+
+Manual release checks: on physical iPhone Safari and Android Chrome, add from the menu, inspect the icon/name, launch from the home screen, confirm app navigation, copying, safe-area spacing and hidden installation invitations. Test embedded browsers and both acceptance and cancellation of Chrome's optional prompt. Automated manifest/unit/HTTP checks are not a substitute for physical OS installation.
+
+Instruction sources checked 2026-09-11: [Apple Safari](https://support.apple.com/ko-kr/guide/iphone/iph42ab2f3a7/ios), [Chrome Android](https://support.google.com/chrome/answer/9658361?co=GENIE.Platform%3DAndroid&hl=ko), [Chrome install criteria](https://web.dev/articles/install-criteria). Menu labels can vary by version; both current and common earlier names appear in the guide.

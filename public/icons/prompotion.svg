@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>PromPotion — modular P</title>
+  <rect width="512" height="512" fill="#1a1a1a"/>
+  <g fill="#f7f7f5">
+    <path d="M148 136h56v248h-56z"/>
+    <path d="M220 136h64a80 80 0 0 1 0 160h-64v-56h64a24 24 0 0 0 0-48h-64z"/>
+  </g>
+</svg>

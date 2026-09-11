@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import ImageWithFallback from "@/components/ImageWithFallback";
+import InstallPromotion from "@/components/InstallPromotion";
 
 /** Page 1 — 서비스 소개 */
 export default function HomePage() {
@@ -91,6 +92,8 @@ export default function HomePage() {
           </div>
         ))}
       </section>
+
+      <InstallPromotion />
 
       <section className="py-20 sm:py-28">
         <div className="max-w-2xl">

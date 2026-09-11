@@ -9,6 +9,11 @@ export type EventName =
   | "prompt_copied"
   | "prompt_saved"
   | "result_uploaded"
+  | "install_guide_viewed"
+  | "install_prompt_requested"
+  | "install_prompt_outcome"
+  | "app_installed"
+  | "homescreen_opened"
   | "task_started"
   | "reset";
 type Properties = Record<string, string | number | boolean | string[]>;
