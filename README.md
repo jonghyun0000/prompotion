@@ -37,6 +37,26 @@ Do not run next dev and next build simultaneously against the same .next directo
 - public/images/diagrams/*.svg: editable original diagrams.
 - public/images/ASSET-PROVENANCE.json: provenance and generation prompts.
 
+## Consumer home questionnaire
+
+Phase 2 (2026-10-08): `/saved` now has per-item deletion with explicit confirmation and a saved-item counter. Deleting a prompt also deletes its attached local image, not copy history or Dream Home answers. The 30-item limit is distinguished from browser quota/security failures. Blocked architecture selection persistence reports a nonblocking warning. Builder previews are labelled illustrative rather than guaranteed generation results. `scripts/phase2-e2e.cjs` checks the architecture flow plus full-library recovery and blocked storage in isolated Chromium; no user profile or server-side data is modified.
+
+`/dream-home` is a separate, key-free consumer flow linked from the landing page and header. The existing architectural builder remains available.
+
+- Four steps cover housing type, approximate size, storeys, outdoor space, bedrooms and bathrooms, living/kitchen arrangement, lifestyle priorities, mood, flooring material and color, wall color and lighting.
+- `lib/dream-home.ts` keeps the catalog, validated brief and deterministic compiler separate from the UI. The consumer flow outputs only one Architectural Presentation Board prompt combining exterior, living room, bedroom/sleeping nook, conceptual floor plans and a material palette. There is no scene or output selector. It shares one brief across panels instead of concatenating contradictory single-scene prompts. The Korean requirements summary is supplementary context, not another prompt.
+- Board plans cover every selected dwelling level, distributing bedroom/bathroom totals across levels rather than repeating them. Apartment plans describe only the focal unit; studio briefs use a sleeping nook. The prompt asks for cross-panel consistency, but does not verify it. Plans must show `CONCEPT ONLY — NOT TO SCALE — NOT FOR CONSTRUCTION`, with no invented dimensions, scales, north arrows or approval marks. The on-screen board diagram is labelled as a layout guide, not an actual generated preview. Copy exports only the integrated board prompt; text downloads include the requirements summary and that same single prompt, never individual scene prompts.
+- The current apartment flow describes a single-level dwelling, not a one-storey building. Private gardens normalize to balconies with an explanation in the UI. Zero bedrooms means an open-plan sleeping nook. Interior flooring choices are not applied to the facade.
+- Answers are saved only when the user selects **답변 저장**, under the versioned local key `prompotion:dream-home:v1`. Restore asks before replacing current answers. Reset removes only this feature's draft, preserving the existing prompt library. Browser persistence can fail; the UI reports failures and provides a complete text download.
+- The existing copy control provides browser clipboard and fallback behavior. Copy history remains available in `/saved`. Home drafts are restored inside `/dream-home`, not through the architecture selection state.
+- No personal names, addresses or contact details are collected. Analytics records event names and limited operational metadata, not room counts, raw briefs or image pixels.
+
+This feature does **not** generate images, verify layouts, preserve cross-scene geometry, or establish structural/regulatory/construction feasibility. Generated images from an external tool still need quality evaluation. No image or LLM API is connected and no new environment variables are required.
+
+For a future API integration, keep the normalized brief as the source of truth and run model calls server-side. Select a provider after output-quality/cost testing, keep keys out of the client, disclose external data transfer, and add authentication/abuse limits, usage caps and error handling before enabling paid calls. The current UI must not claim image generation until an actual provider is integrated and verified.
+
+The headless flow script `scripts/dream-home-e2e.cjs` accepts a local base URL and optional screenshot directory. Install Playwright separately or expose an existing installation through `NODE_PATH`. `CHROMIUM_EXECUTABLE_PATH` and `WEBKIT_EXECUTABLE_PATH` can point to available automation browsers. Browser emulation does not constitute physical iPhone or Android verification.
+
 ## Asset policy
 The old JPEG placeholders are retained for historical compatibility but are not referenced by active data. No arbitrary remote image URLs are used. Architecture previews were generated from one original baseline using built-in imagegen. SVG diagrams are independently authored. Images illustrate tendencies; they are not measured lens simulations or guaranteed AI outputs. Neutral options legitimately share the same baseline.
 

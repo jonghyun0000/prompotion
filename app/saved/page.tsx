@@ -7,6 +7,7 @@ import {
   readHistory,
   readResultImage,
   savePrompt,
+  deleteSavedPrompt,
   type SavedPrompt,
 } from "@/lib/storage";
 import { useSelection } from "@/context/SelectionContext";
@@ -19,6 +20,7 @@ export default function SavedPage() {
   const [items, setItems] = useState<SavedPrompt[]>([]);
   const [history, setHistory] = useState<ReturnType<typeof readHistory>>([]);
   const [busy, setBusy] = useState("");
+  const [deleteId, setDeleteId] = useState<string>();
   const { restore } = useSelection();
   const router = useRouter();
   const { showToast } = useToast();
@@ -37,6 +39,7 @@ export default function SavedPage() {
         이 브라우저에 저장된 프롬프트와 생성 결과입니다. 최대 30개 보관하며,
         브라우저 데이터를 지우면 사라집니다.
       </p>
+      <p className="mt-2 text-xs text-muted" role="status">저장 {items.length} / 30개</p>
       {!items.length && (
         <div className="my-8 rounded-xl border border-dashed border-line p-10">
           <p>아직 저장한 프롬프트가 없습니다.</p>
@@ -83,7 +86,28 @@ export default function SavedPage() {
                 >
                   다시 편집
                 </Button>
+                <Button variant="secondary" disabled={!!busy} onClick={() => setDeleteId(item.id)}>
+                  삭제
+                </Button>
               </div>
+              {deleteId === item.id && (
+                <div className="mt-4 rounded-lg border border-line p-4" role="group" aria-label="삭제 확인">
+                  <p className="text-sm">이 프롬프트와 첨부 이미지를 삭제할까요? 삭제 후에는 복구할 수 없습니다.</p>
+                  <div className="mt-3 flex gap-2">
+                    <Button variant="secondary" onClick={() => setDeleteId(undefined)}>취소</Button>
+                    <Button disabled={!!busy} onClick={() => {
+                      try {
+                        deleteSavedPrompt(item.id);
+                        setItems(readSaved());
+                        setDeleteId(undefined);
+                        showToast("프롬프트와 첨부 이미지를 삭제했습니다.");
+                      } catch {
+                        showToast("삭제하지 못했습니다. 브라우저 저장 설정을 확인한 뒤 다시 시도해주세요.");
+                      }
+                    }}>삭제 확인</Button>
+                  </div>
+                </div>
+              )}
               <label className="mt-5 block text-xs">
                 생성 결과 {item.image ? "교체" : "추가"} · JPG / PNG / WebP,
                 10MB 이하

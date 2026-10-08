@@ -14,6 +14,10 @@ export type EventName =
   | "install_prompt_outcome"
   | "app_installed"
   | "homescreen_opened"
+  | "dream_home_step_viewed"
+  | "dream_home_generated"
+  | "dream_home_saved"
+  | "dream_home_downloaded"
   | "task_started"
   | "reset";
 type Properties = Record<string, string | number | boolean | string[]>;

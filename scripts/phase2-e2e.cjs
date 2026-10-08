@@ -1,0 +1,53 @@
+// Isolated browser-only persistence; never touches a user's browser profile.
+const assert = require("node:assert/strict");
+const { chromium } = require("playwright");
+const { verifyMvp } = require("./e2e-test.js");
+const base = process.argv[2] || "http://127.0.0.1:3100";
+(async () => {
+  const browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH } : {}) });
+  const errors = [];
+  try {
+    const context = await browser.newContext({ permissions: ["clipboard-read", "clipboard-write"] });
+    const page = await context.newPage();
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    const checks = await verifyMvp({ goto: (url) => page.goto(url), playwright: page }, base);
+    const seed = Array.from({ length: 30 }, (_, i) => ({ id: String(i), title: "검증 " + i, prompt: "test architectural prompt", selection: { selectedImageType: "perspective", selectedOptions: { lighting: "golden-hour" } }, createdAt: "2026-10-08" }));
+    await page.evaluate((items) => localStorage.setItem("prompotion:saved:v1", JSON.stringify(items)), seed);
+    await page.goto(base + "/select");
+    await page.getByRole("button", { name: /^투시도 투시도/ }).click();
+    await page.getByRole("button", { name: "Warm Sunset 담기", exact: true }).click();
+    await page.getByRole("button", { name: "프롬프트 생성", exact: true }).first().click();
+    await page.getByText("프롬프트 저장 / 결과 이미지 첨부", { exact: true }).click();
+    await page.getByRole("button", { name: "프롬프트 저장", exact: true }).click();
+    await page.getByText(/최대 30개까지 저장할 수 있습니다/).waitFor();
+    await page.getByRole("button", { name: "닫기", exact: true }).click();
+    await page.goto(base + "/saved");
+    await page.getByRole("button", { name: "삭제", exact: true }).first().click();
+    await page.getByRole("button", { name: "취소", exact: true }).click();
+    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("prompotion:saved:v1")).length), 30);
+    await page.getByRole("button", { name: "삭제", exact: true }).first().click();
+    await page.getByRole("button", { name: "삭제 확인", exact: true }).click();
+    await page.getByText("저장 29 / 30개", { exact: true }).waitFor();
+    await page.goto(base + "/builder");
+    await page.getByRole("button", { name: "프롬프트 생성", exact: true }).first().click();
+    await page.getByText("프롬프트 저장 / 결과 이미지 첨부", { exact: true }).click();
+    await page.getByRole("button", { name: "프롬프트 저장", exact: true }).click();
+    await page.getByRole("button", { name: "저장 내용 업데이트", exact: true }).waitFor();
+    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("prompotion:saved:v1")).length), 30);
+    checks.push({ name: "limit message, cancelled deletion, confirmed deletion and resave", ok: true });
+    const blocked = await browser.newContext();
+    await blocked.addInitScript(() => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function (key, value) { if (key === "prompotion:selection") throw new DOMException("blocked", "SecurityError"); return original.call(this, key, value); }; });
+    const blockedPage = await blocked.newPage();
+    blockedPage.on("pageerror", (e) => errors.push(e.message));
+    await blockedPage.goto(base + "/select");
+    await blockedPage.getByRole("button", { name: /^투시도 투시도/ }).click();
+    await blockedPage.getByText(/선택 내용을 이 브라우저에 저장하지 못했습니다/).waitFor();
+    await blockedPage.getByRole("button", { name: "Warm Sunset 담기", exact: true }).click();
+    await blockedPage.getByRole("button", { name: "프롬프트 생성", exact: true }).first().click();
+    assert.match(await blockedPage.getByRole("textbox", { name: "FINAL PROMPT" }).inputValue(), /golden hour/);
+    checks.push({ name: "blocked persistence warns but generation stays usable", ok: true });
+    assert.deepEqual(errors, []);
+    console.log(JSON.stringify({ base, checks, errors, limitations: "Isolated Chromium; clipboard permission granted by automation, not physical device verification." }, null, 2));
+  } finally { await browser.close(); }
+})().catch((error) => { console.error(error); process.exitCode = 1; });

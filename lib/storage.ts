@@ -9,6 +9,15 @@ export interface SavedPrompt {
   image?: string;
 }
 const KEY = "prompotion:saved:v1";
+export class SavedPromptLimitError extends Error {
+  constructor() {
+    super("Saved prompt limit reached");
+    this.name = "SavedPromptLimitError";
+  }
+}
+export function deleteSavedPrompt(id: string) {
+  localStorage.setItem(KEY, JSON.stringify(readSaved().filter((item) => item.id !== id)));
+}
 export function readSaved(): SavedPrompt[] {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) || "[]");
@@ -37,7 +46,7 @@ export function readSaved(): SavedPrompt[] {
 }
 export function savePrompt(item: SavedPrompt) {
   const items = readSaved().filter((previous) => previous.id !== item.id);
-  if (items.length >= 30) throw new Error("Saved prompt limit reached");
+  if (items.length >= 30) throw new SavedPromptLimitError();
   localStorage.setItem(KEY, JSON.stringify([item, ...items].slice(0, 30)));
 }
 export function readHistory(): { prompt: string; createdAt: string }[] {

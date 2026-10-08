@@ -146,6 +146,9 @@ export default function PromptBuilderPage() {
               기준 이미지와 비교
             </label>
           </div>
+          <p className="mb-4 text-xs leading-5 text-muted">
+            이미지는 요소를 이해하기 위한 예시입니다. 사용하는 AI와 입력 이미지·설정에 따라 결과가 달라질 수 있습니다.
+          </p>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {[...active.promptOptions]
               .sort((a, b) => Number(!!b.recommended) - Number(!!a.recommended))
@@ -164,11 +167,11 @@ export default function PromptBuilderPage() {
                     {compare && (
                       <div>
                         <p className="px-3 pt-3 text-xs text-muted">
-                          기준 · Daylight / Concrete
+                          변경 전 기준 예시
                         </p>
                         <ImageWithFallback
                           src={option.beforeImage}
-                          alt="중립적인 낮의 기준 건축물"
+                          alt="선택 요소를 적용하기 전의 기준 예시"
                           className="aspect-[4/3] w-full"
                         />
                       </div>

@@ -26,6 +26,7 @@ async function verifyMvp(tab, base) {
   const prompt = await tab.playwright.getByRole("textbox", {name:"FINAL PROMPT"}).evaluate(element=>element.value);
   check("generation", ["Architectural perspective","exposed raw concrete","warm golden hour","35mm"].every(text=>prompt.includes(text)));
   await tab.playwright.getByRole("button", {name:"프롬프트 복사",exact:true}).click();
+  await tab.playwright.getByRole("button", {name:"복사 완료!",exact:true}).waitFor({state:"visible"});
   check("copy feedback", await tab.playwright.getByRole("button", {name:"복사 완료!",exact:true}).isVisible());
   await tab.playwright.getByRole("button", {name:"닫기",exact:true}).click();
   await tab.playwright.getByRole("button", {name:"Warm Sunset 삭제",exact:true}).click();

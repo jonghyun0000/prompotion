@@ -6,6 +6,8 @@ import {
   readHistory,
   rememberCopy,
   readResultImage,
+  deleteSavedPrompt,
+  SavedPromptLimitError,
 } from "../lib/storage";
 const values = new Map<string, string>();
 const storage = {
@@ -17,6 +19,23 @@ const storage = {
 Object.defineProperty(globalThis, "localStorage", {
   value: storage,
   configurable: true,
+});
+test("deleting a saved prompt frees the 30-item limit and preserves unrelated storage", () => {
+  values.clear();
+  const item = { id: "", title: "test", prompt: "test", createdAt: "2026-10-08", selection: { selectedImageType: "perspective", selectedOptions: {} } };
+  for (let i = 0; i < 30; i++) savePrompt({ ...item, id: String(i) });
+  values.set("prompotion:dream-home:v1", "keep");
+  assert.throws(() => savePrompt({ ...item, id: "new" }), SavedPromptLimitError);
+  savePrompt({ ...item, id: "0", title: "updated" });
+  assert.equal(readSaved().length, 30);
+  deleteSavedPrompt("0");
+  assert.equal(readSaved().length, 29);
+  assert.equal(readSaved().some((p) => p.id === "0"), false);
+  savePrompt({ ...item, id: "new" });
+  assert.equal(readSaved().length, 30);
+  assert.equal(values.get("prompotion:dream-home:v1"), "keep");
+  deleteSavedPrompt("missing");
+  assert.equal(readSaved().length, 30);
 });
 test("corrupt saved data is ignored; invalid image URL cannot render", () => {
   values.clear();

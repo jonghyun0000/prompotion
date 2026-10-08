@@ -93,6 +93,37 @@ export default function HomePage() {
         ))}
       </section>
 
+      <section
+        aria-labelledby="dream-home-heading"
+        className="mt-8 grid gap-7 rounded-card border border-line bg-surface p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center"
+      >
+        <div className="max-w-2xl">
+          <p className="eyebrow">FOR YOUR FUTURE HOME</p>
+          <h2
+            id="dream-home-heading"
+            className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
+          >
+            내가 원하는 집, 질문부터 시작해요.
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-muted sm:text-base">
+            주택인지 아파트인지, 방과 욕실은 몇 개인지, 어떤 바닥 색과 분위기를
+            좋아하는지 알려주세요. 건축 용어를 몰라도 원하는 집의 조건을 한국어로
+            정리하고, 이미지 생성용 영어 프롬프트를 만들 수 있어요.
+          </p>
+          <p className="mt-3 text-xs leading-6 text-muted">
+            가입·API 키 없이 사용 · 이미지는 외부 AI에서 생성 · 실제 설계 도면은
+            제공하지 않아요
+          </p>
+        </div>
+        <Link
+          href="/dream-home"
+          className="inline-flex min-h-13 items-center justify-center gap-3 rounded-full border border-ink px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-white"
+        >
+          내가 원하는 집 구상하기
+          <ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
+      </section>
+
       <InstallPromotion />
 
       <section className="py-20 sm:py-28">

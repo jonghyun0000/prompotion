@@ -39,6 +39,7 @@ const SelectionContext = createContext<SelectionContextValue | null>(null);
 export function SelectionProvider({ children }: { children: React.ReactNode }) {
   const [selection, setSelection] = useState<SelectionState>(emptySelection);
   const [hydrated, setHydrated] = useState(false);
+  const [storageUnavailable, setStorageUnavailable] = useState(false);
 
   // 최초 마운트 시 localStorage 에서 복원.
   //
@@ -71,8 +72,11 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(selection));
+      // Browser persistence is an external system; report its availability after hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setStorageUnavailable(false);
     } catch {
-      // 저장 실패는 무시한다. 앱 동작 자체에는 영향이 없다.
+      setStorageUnavailable(true);
     }
   }, [selection, hydrated]);
 
@@ -148,6 +152,11 @@ export function SelectionProvider({ children }: { children: React.ReactNode }) {
   return (
     <SelectionContext.Provider value={value}>
       {children}
+      {storageUnavailable && selection.selectedImageType && (
+        <div role="status" className="fixed bottom-24 left-4 right-4 z-40 mx-auto max-w-xl rounded-lg border border-line bg-surface p-4 text-sm shadow-md">
+          선택 내용을 이 브라우저에 저장하지 못했습니다. 현재 작업은 계속할 수 있지만 새로고침하면 사라질 수 있습니다. 완성된 프롬프트를 복사해 보관해주세요.
+        </div>
+      )}
     </SelectionContext.Provider>
   );
 }

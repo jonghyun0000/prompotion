@@ -4,7 +4,7 @@ import Button from "./Button";
 import CopyButton from "./CopyButton";
 import { useSelection } from "@/context/SelectionContext";
 import { useToast } from "@/context/ToastContext";
-import { savePrompt, readResultImage } from "@/lib/storage";
+import { savePrompt, readResultImage, SavedPromptLimitError } from "@/lib/storage";
 import { trackEvent } from "@/lib/analytics";
 import type { OptionCategory, PromptOption } from "@/lib/types";
 
@@ -62,9 +62,11 @@ export default function FinalPromptModal({
         elementCount: breakdown.length,
       });
       showToast("이 브라우저의 내 프롬프트에 저장했습니다.");
-    } catch {
+    } catch (error) {
       setStatus(
-        "저장 공간이 부족하거나 저장이 차단되어 있습니다. 프롬프트를 복사해 보관해주세요.",
+        error instanceof SavedPromptLimitError
+          ? "최대 30개까지 저장할 수 있습니다. 내 프롬프트에서 사용하지 않는 항목을 삭제한 뒤 다시 저장해주세요."
+          : "저장 공간이 부족하거나 저장이 차단되어 있습니다. 프롬프트를 복사해 보관해주세요.",
       );
     }
   };
@@ -99,6 +101,7 @@ export default function FinalPromptModal({
           </label>
           <textarea
             id="final-prompt"
+            lang="en"
             readOnly
             value={finalPrompt}
             className="mt-2 min-h-40 w-full resize-y rounded-lg border border-line bg-canvas p-4 font-mono text-sm leading-relaxed"
